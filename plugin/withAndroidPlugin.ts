@@ -25,15 +25,18 @@ const REQUIRED_PERMISSIONS = [
 
 const MLKIT_SEGMENTATION_DEP = 'implementation("com.google.mlkit:segmentation-selfie:16.0.0-beta6")';
 
-function getAndroidPackagePath(projectRoot: string): string {
-  const manifestPath = path.join(projectRoot, 'android/app/src/main/AndroidManifest.xml');
-  let packageName: string | undefined;
+function getAndroidPackagePath(projectRoot: string, packageNameHint?: string): string {
+  let packageName: string | undefined = packageNameHint;
 
-  if (fs.existsSync(manifestPath)) {
-    const manifestContent = fs.readFileSync(manifestPath, 'utf8');
-    const match = manifestContent.match(/package="([\w.]+)"/);
-    if (match) {
-      packageName = match[1];
+  // Fallback: read from AndroidManifest.xml
+  if (!packageName) {
+    const manifestPath = path.join(projectRoot, 'android/app/src/main/AndroidManifest.xml');
+    if (fs.existsSync(manifestPath)) {
+      const manifestContent = fs.readFileSync(manifestPath, 'utf8');
+      const match = manifestContent.match(/package="([\w.]+)"/);
+      if (match) {
+        packageName = match[1];
+      }
     }
   }
 
@@ -67,14 +70,14 @@ function getAndroidPackagePath(projectRoot: string): string {
   }
 
   if (!packageName) {
-    throw new Error('Package name not found in AndroidManifest.xml, app.config.ts, app.config.js or app.json');
+    throw new Error('Package name not found in config.android.package, AndroidManifest.xml, app.config.ts, app.config.js or app.json');
   }
 
   return path.join(projectRoot, 'android/app/src/main/java', ...packageName.split('.'));
 }
 
-function getPackageName(projectRoot: string): string {
-  return getAndroidPackagePath(projectRoot)
+function getPackageName(projectRoot: string, packageNameHint?: string): string {
+  return getAndroidPackagePath(projectRoot, packageNameHint)
     .replace(path.join(projectRoot, 'android/app/src/main/java') + path.sep, '')
     .split(path.sep)
     .join('.');
@@ -186,7 +189,7 @@ const withAndroidPlugin: ConfigPlugin<PluginProps> = (config, props) => {
 
     const packageName = (() => {
       try {
-        return getPackageName(config.modRequest.projectRoot);
+        return getPackageName(config.modRequest.projectRoot, config.android?.package ?? undefined);
       } catch {
         return null;
       }
