@@ -182,13 +182,13 @@ const withMlKitGradleDep: ConfigPlugin = (config) => {
 
 const withAndroidPlugin: ConfigPlugin<PluginProps> = (config, props) => {
 
-  logger.info('withAndroidPlugin called with props:', props);
+  logger.warn('withAndroidPlugin called with props:', JSON.stringify(props, null, 2));
 
   let updatedConfig = withMainApplication(config, (config) => {
     const mainApplication = config.modResults;
 
-    logger.info('config.android?.package =', config?.android?.package);
-    logger.info('config =', JSON.stringify(config, null, 2));
+    logger.warn('config.android?.package =', config?.android?.package);
+    logger.warn('config =', JSON.stringify(config, null, 2));
 
     const packageName = (() => {
       try {
