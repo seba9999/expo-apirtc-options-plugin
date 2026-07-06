@@ -83,9 +83,9 @@ function getPackageName(projectRoot: string, packageNameHint?: string): string {
     .join('.');
 }
 
-function copyAndPatchJavaFiles(projectRoot: string) {
+function copyAndPatchJavaFiles(projectRoot: string, packageNameHint?: string) {
   const srcDir = path.join(__dirname, 'static/java');
-  const destDir = getAndroidPackagePath(projectRoot);
+  const destDir = getAndroidPackagePath(projectRoot, packageNameHint);
 
   const packageName = destDir
     .replace(path.join(projectRoot, 'android/app/src/main/java') + path.sep, '')
@@ -108,7 +108,7 @@ function copyAndPatchJavaFiles(projectRoot: string) {
   });
 }
 
-function copyAndPatchKotlinFiles(projectRoot: string) {
+function copyAndPatchKotlinFiles(projectRoot: string, packageNameHint?: string) {
   const srcDir = path.join(__dirname, 'static/kotlin');
   const destDir = getAndroidPackagePath(projectRoot);
 
@@ -187,6 +187,9 @@ const withAndroidPlugin: ConfigPlugin<PluginProps> = (config, props) => {
   let updatedConfig = withMainApplication(config, (config) => {
     const mainApplication = config.modResults;
 
+    logger.info('config.android?.package =', config?.android?.package);
+    logger.info('config =', JSON.stringify(config, null, 2));
+
     const packageName = (() => {
       try {
         return getPackageName(config.modRequest.projectRoot, config.android?.package ?? undefined);
@@ -260,11 +263,11 @@ const withAndroidPlugin: ConfigPlugin<PluginProps> = (config, props) => {
       }
 
       // Copy Kotlin native files
-      copyAndPatchKotlinFiles(config.modRequest.projectRoot);
+      copyAndPatchKotlinFiles(config.modRequest.projectRoot, config.android?.package ?? undefined);
     }
 
     // Copy Java native files
-    copyAndPatchJavaFiles(config.modRequest.projectRoot);
+    copyAndPatchJavaFiles(config.modRequest.projectRoot, config.android?.package ?? undefined);
 
     return config;
   });
