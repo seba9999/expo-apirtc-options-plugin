@@ -24,11 +24,15 @@
   },
   "scripts": {
     "build": "tsc && npm run copy-static",
-    "copy-static": "mkdir -p ./build/static && cp -R ./plugin/static/* ./build/static"
+    "copy-static": "shx mkdir -p build/static && shx cp -R plugin/static/* build/static",
+    "prepare": "npm run build"
   },
   "files": [
     "index.js",
     "build"
   ],
-  "types": "./build/plugin/withWebRTCOptions.d.ts"
+  "types": "./build/plugin/withWebRTCOptions.d.ts",
+  "devDependencies": {
+    "shx": "^0.4.0"
+  }
 }
