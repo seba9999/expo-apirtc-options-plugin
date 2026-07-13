@@ -24,8 +24,12 @@ export const withPlugin: ConfigPlugin<PluginProps> = (
   }
 
   config = withAndroidPlugin(config, props);
-  config = withIosBroadcastExtension(config, props);
-  config = withIosRPKFiles(config, props);
+
+  // Adds screen-sharing capabilities and extension only if the user has enabled it
+  if (props.enableMediaProjectionService) {
+    config = withIosBroadcastExtension(config, props);
+    config = withIosRPKFiles(config, props);
+  }
   return config;
 };
 
