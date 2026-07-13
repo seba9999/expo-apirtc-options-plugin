@@ -1,7 +1,8 @@
-import { ConfigPlugin, withPlugins } from '@expo/config-plugins';
+import { ConfigPlugin } from '@expo/config-plugins';
 import withAndroidPlugin from './withAndroidPlugin';
 import withIosBroadcastExtension from './withIosBroadcastExtension';
 import withIosRPKFiles from './withIosRPKFiles';
+import withVideoEffectsBridge from './withVideoEffectsBridge';
 import { setLogLevel, LogLevel } from './logger';
 
 type PluginProps = {
@@ -30,6 +31,8 @@ export const withPlugin: ConfigPlugin<PluginProps> = (
     config = withIosBroadcastExtension(config, props);
     config = withIosRPKFiles(config, props);
   }
+
+  config = withVideoEffectsBridge(config, props);
   return config;
 };
 
