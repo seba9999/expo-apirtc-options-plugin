@@ -11,5 +11,4 @@
 
 @interface RCT_EXTERN_MODULE(ReactNativeApiRTC_RPK, RCTEventEmitter)
 RCT_EXTERN_METHOD(sendBroadcastNeedToBeStopped)
-RCT_EXTERN_METHOD(showVideoEffectsUI)
 @end

@@ -64,15 +64,6 @@ class ReactNativeApiRTC_RPK: RCTEventEmitter {
     status = "Empty"
   }
 
-  @objc
-  func showVideoEffectsUI() {
-    if #available(iOS 15.4, *) {
-      DispatchQueue.main.async {
-        AVCaptureDevice.showSystemUserInterface(.videoEffects)
-      }
-    }
-  }
-
   //This function is used to send a notification to the extension to stop the broadcast
   @objc
   func sendBroadcastNeedToBeStopped() {
